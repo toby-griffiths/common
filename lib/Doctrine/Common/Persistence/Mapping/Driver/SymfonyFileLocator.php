@@ -172,7 +172,11 @@ class SymfonyFileLocator implements FileLocator
 
                     // NOTE: All files found here means classes are not transient!
                     if (isset($this->prefixes[$path])) {
-                        $classes[] = $this->prefixes[$path].'\\'.str_replace('.', '\\', $fileName);
+
+                        // Calculate namespace suffix for given prefix as a relative path from basepath to file path
+                        $nsSuffix = strtr(substr(realpath($file->getPath()), strlen(realpath($path))),'.','\\');
+
+                        $classes[] = $this->prefixes[$path].str_replace(DIRECTORY_SEPARATOR, '\\', $nsSuffix).'\\'.str_replace('.', '\\', $fileName);
                     } else {
                         $classes[] = str_replace('.', '\\', $fileName);
                     }
